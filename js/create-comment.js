@@ -4,7 +4,7 @@ import { COMMENTS, NAMES } from "./data.js";
 const createComment = (index) => {
     return {
       id: index,
-      avatar: 'img/avatar-' + index + '.svg',
+      avatar: 'img/avatar-${getRandomNumber(1, 6)}.svg',
       message: createMessage(),
       name: getRandomArrayElement(NAMES)
     };

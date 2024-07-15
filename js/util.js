@@ -13,4 +13,8 @@ const getLengthLine = (line, length) => {
     return line.length <= length;
 }
 
-export {getRandomNumber, getLengthLine, getRandomArrayElement};
+const isEsc = (evt) => {
+  return evt.key === 'Escape';
+}
+
+export {getRandomNumber, getLengthLine, getRandomArrayElement, isEsc};
