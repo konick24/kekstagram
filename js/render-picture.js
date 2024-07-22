@@ -14,7 +14,7 @@ renderPictures.forEach((data) => {
   pictureElement.querySelector('.picture__comments').textContent = data.comments.length;
   pictureElement.querySelector('.picture__likes').textContent = data.likes;
 
-  pictureElement.addEventListener('click', function () {
+  pictureElement.addEventListener('click', () => {
     showFullPhoto(data);
   });
 
