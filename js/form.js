@@ -1,4 +1,6 @@
 import {isEsc} from './util.js';
+import {resetScale} from './scale.js';
+import {resetEffects} from './effect.js';
 
 const formModal = document.querySelector('.img-upload__overlay');
 const body = document.querySelector('body');
@@ -25,6 +27,8 @@ const showModal = () => {
 
 const hideModal = () => {
   form.reset();
+  resetScale();
+  resetEffects();
   pristine.reset();
   formModal.classList.add('hidden');
   body.classList.remove('modal-open');
