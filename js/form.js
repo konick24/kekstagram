@@ -1,6 +1,7 @@
-import {isEsc} from './util.js';
+import {isEsc, showAlert} from './util.js';
 import {resetScale} from './scale.js';
 import {resetEffects} from './effect.js';
+import {sendData} from './api.js';
 
 const formModal = document.querySelector('.img-upload__overlay');
 const body = document.querySelector('body');
@@ -9,11 +10,16 @@ const cancelButton = document.querySelector('#upload-cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
+const submitButton =document.querySelector('.img-upload__submit');
 
 const re = /^#[A-Za-zА-Яа-я0-9ёЁ]{1,19}$/;
 const MAXCOUNTTAG = 5;
 
-const pristine = new Pristine(form);
+const pristine = new Pristine(form, {
+  classTo: 'img-upload__element',
+  errorTextParent: 'img-upload__element',
+  errorTextClass: 'img-upload__error',
+});
 
 const isTextFieldFocused = () =>
   document.activeElement === hashtagField ||
@@ -42,7 +48,7 @@ function onEscKeyDown(evt) {
   }
 }
 
-const onCuncelButtonClick = () => {
+const onCancelButtonClick = () => {
   hideModal();
 };
 
@@ -67,13 +73,36 @@ const validateTags = (value) => {
   return hasUniqueTags(tags) && hasValidCount(tags) && tags.every(isValidTag);
 };
 
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправляю...';
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Отправить';
+};
+
 pristine.addValidator(hashtagField, validateTags, 'Неправильно заполнены хэштеги');
 
-const onFormSubmit = (evt) => {
-  evt.preventDefault();
-  pristine.validate();
+const setOnFormSubmit = () => {
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(() => {
+        hideModal();
+        unblockSubmitButton();
+      }, () => {
+        showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+      }, new FormData(evt.target));
+    }
+  });
 };
 
 fileField.addEventListener('change', onFileInputChenge);
-cancelButton.addEventListener('click', onCuncelButtonClick);
-form.addEventListener('submit', onFormSubmit);
+cancelButton.addEventListener('click', onCancelButtonClick);
+
+export {setOnFormSubmit, hideModal};
