@@ -1,7 +1,6 @@
-import {isEsc, showAlert} from './util.js';
+import {isEsc} from './util.js';
 import {resetScale} from './scale.js';
 import {resetEffects} from './effect.js';
-import {sendData} from './api.js';
 
 const formModal = document.querySelector('.img-upload__overlay');
 const body = document.querySelector('body');
@@ -61,6 +60,7 @@ const isValidTag = (string) => re.test(string);
 //проверка количества тегов
 const hasValidCount = (tags) => tags.length <= MAXCOUNTTAG;
 
+
 // проверка на ункальность
 const hasUniqueTags = (tags) => {
   tags.map((tag) => tag.toLowerCase());
@@ -69,7 +69,7 @@ const hasUniqueTags = (tags) => {
 
 // валидация хэштега
 const validateTags = (value) => {
-  const tags = value.trim().split(' ');
+  const tags = value.trim().split(' ').filter((tag) => tag.trim().length);
   return hasUniqueTags(tags) && hasValidCount(tags) && tags.every(isValidTag);
 };
 
@@ -85,19 +85,15 @@ const unblockSubmitButton = () => {
 
 pristine.addValidator(hashtagField, validateTags, 'Неправильно заполнены хэштеги');
 
-const setOnFormSubmit = () => {
-  form.addEventListener('submit', (evt) => {
+const setOnFormSubmit = (cb) => {
+  form.addEventListener('submit', async (evt) => {
     evt.preventDefault();
-
     const isValid = pristine.validate();
+
     if (isValid) {
       blockSubmitButton();
-      sendData(() => {
-        hideModal();
-        unblockSubmitButton();
-      }, () => {
-        showAlert('Не удалось отправить форму. Попробуйте ещё раз');
-      }, new FormData(evt.target));
+      await cb(new FormData(form));
+      unblockSubmitButton();
     }
   });
 };
