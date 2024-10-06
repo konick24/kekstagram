@@ -92,6 +92,7 @@ const setOnFormSubmit = (cb) => {
 
     if (isValid) {
       blockSubmitButton();
+      console.log('Лох');
       await cb(new FormData(form));
       unblockSubmitButton();
     }

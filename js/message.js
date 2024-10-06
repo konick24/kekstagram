@@ -6,16 +6,20 @@ const showSuccessMessage = () => {
   body.append(successMessage);
   body.addEventListener('keydown', onEscKeyDown);
   body.addEventListener('click', onBodyClick);
+  successMessage.querySelector('.success__button').addEventListener('click', hideMessage);
 };
 
 const showErrorMessage = () => {
-
+  body.appendChild(errorMessage);
+  body.addEventListener('keydown', onEscKeyDown);
+  errorMessage.querySelector('.error__button').addEventListener('click', hideMessage);
 };
 
 function hideMessage() {
   const messageElement = document.querySelector('.success') || document.querySelector('.error');
   messageElement.remove();
   body.removeEventListener('keydown', onEscKeyDown);
+  body.removeEventListener('click', onBodyClick);
 }
 
 function onBodyClick(evt) {
