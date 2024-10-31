@@ -10,7 +10,7 @@ const showSuccessMessage = () => {
 };
 
 const showErrorMessage = () => {
-  body.appendChild(errorMessage);
+  body.append(errorMessage);
   body.addEventListener('keydown', onEscKeyDown);
   errorMessage.querySelector('.error__button').addEventListener('click', hideMessage);
 };

@@ -1,6 +1,6 @@
-import {isEsc} from './util.js';
-import {resetScale} from './scale.js';
-import {resetEffects} from './effect.js';
+import { isEsc } from './util.js';
+import { resetScale } from './scale.js';
+import { resetEffects } from './effect.js';
 
 const formModal = document.querySelector('.img-upload__overlay');
 const body = document.querySelector('body');
@@ -9,8 +9,11 @@ const cancelButton = document.querySelector('#upload-cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
-const submitButton =document.querySelector('.img-upload__submit');
+const submitButton = document.querySelector('.img-upload__submit');
+const photoPreview = document.querySelector('.img-upload__preview img');
+const effectPreview = document.querySelectorAll('.effects__preview');
 
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const re = /^#[A-Za-zА-Яа-я0-9ёЁ]{1,19}$/;
 const MAXCOUNTTAG = 5;
 
@@ -51,7 +54,21 @@ const onCancelButtonClick = () => {
   hideModal();
 };
 
+const isValidType = (file) => {
+  const fileName = file.name.toLowerCase();
+  return FILE_TYPES.some((it) => fileName.endsWith(it));
+};
+
+
 const onFileInputChenge = () => {
+  const file = fileField.files[0];
+
+  if (file && isValidType(file)) {
+    photoPreview.src = URL.createObjectURL(file);
+    effectPreview.forEach((effect) => {
+      effect.style.backgroundImage = `url('${photoPreview.src}')`;
+    });
+  }
   showModal();
 };
 
@@ -92,7 +109,6 @@ const setOnFormSubmit = (cb) => {
 
     if (isValid) {
       blockSubmitButton();
-      console.log('Лох');
       await cb(new FormData(form));
       unblockSubmitButton();
     }
@@ -102,4 +118,4 @@ const setOnFormSubmit = (cb) => {
 fileField.addEventListener('change', onFileInputChenge);
 cancelButton.addEventListener('click', onCancelButtonClick);
 
-export {setOnFormSubmit, hideModal};
+export  { setOnFormSubmit, hideModal };

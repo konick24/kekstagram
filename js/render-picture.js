@@ -6,6 +6,7 @@ const fragment = document.createDocumentFragment(); // создаём фрагм
 
 // проходимся по массиву картинок, полученных с сервера
 const renderPicture = (datas) => {
+  pictures.querySelectorAll('.picture').forEach((element) => element.remove());
   datas.forEach((data) => {
     const pictureElement = template.cloneNode(true);
     pictureElement.querySelector('.picture__img').src = data.url;
